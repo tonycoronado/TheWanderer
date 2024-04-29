@@ -5,11 +5,12 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "InputActionValue.h"
+#include "AbilitySystemInterface.h"
 #include "TheWandererCharacter.generated.h"
 
 
 UCLASS(config=Game)
-class ATheWandererCharacter : public ACharacter
+class ATheWandererCharacter : public ACharacter, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 
@@ -37,10 +38,25 @@ class ATheWandererCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* LookAction;
 
+	//Ability System Component
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "GAS", meta = (AllowPrivateAccess = "true"))
+	class UAbilitySystemComponent* AbilitySystemComponent; 
+
 public:
 	ATheWandererCharacter();
 	
+	virtual class UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
+	virtual void PossessedBy(AController* NewController) override;
+	virtual void OnRep_PlayerState() override;
+
+	virtual void InitializeAbilities();
+	virtual void InitializeEffects();
+
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "GAS")
+	TArray<TSubclassOf<class UTWGameplayAbility>> DefaultAbilities;
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "GAS")
+	TArray<TSubclassOf<class UGameplayEffect>> DefaultEffects;
 protected:
 
 	/** Called for movement input */
@@ -53,7 +69,9 @@ protected:
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	
+
+	virtual void BindInput();
+	bool bIsInputBound { false };
 	// To add mapping context
 	virtual void BeginPlay();
 
