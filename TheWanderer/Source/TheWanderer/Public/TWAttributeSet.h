@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AbilitySystemComponent.h"
 #include "AttributeSet.h"
 #include "TWAttributeSet.generated.h"
 
@@ -35,6 +36,10 @@ class THEWANDERER_API UTWAttributeSet : public UAttributeSet
 	
 	UFUNCTION()
 	virtual void OnRep_MaxHealth(const FGameplayAttributeData& OldMaxHealth);
+
+	virtual void PreAttributeBaseChange(const FGameplayAttribute& Attribute, float& NewValue) const override;
+	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
+	virtual void ClampAttributeOnChange(const FGameplayAttribute& Attribute, float& NewValue) const;
 
 	
 	

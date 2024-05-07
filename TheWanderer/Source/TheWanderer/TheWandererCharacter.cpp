@@ -53,6 +53,9 @@ ATheWandererCharacter::ATheWandererCharacter()
 	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>("AbilitySystemComponent");
 	AbilitySystemComponent->SetIsReplicated(true);
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
+
+	//Attribute Set
+	AttributeSet = CreateDefaultSubobject<UTWAttributeSet>("AttributeSet");
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
 }
@@ -147,6 +150,9 @@ void ATheWandererCharacter::SetupPlayerInputComponent(class UInputComponent* Pla
 		//Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ATheWandererCharacter::Look);
 
+		//Fire Ability
+		EnhancedInputComponent->BindAction(FireAbilityAction, ETriggerEvent::Triggered, this, &ATheWandererCharacter::OnFireAbility);
+
 	}
 	BindInput();
 }
@@ -193,6 +199,25 @@ void ATheWandererCharacter::Look(const FInputActionValue& Value)
 		// add yaw and pitch input to controller
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
+	}
+}
+
+void ATheWandererCharacter::OnFireAbility(const FInputActionValue& Value)
+{
+	SendAbilityLocalInput(Value, static_cast<int32>(EAbilityInputID::FireAbility));
+}
+
+void ATheWandererCharacter::SendAbilityLocalInput(const FInputActionValue& Value, int32 InputID)
+{
+	if (!AbilitySystemComponent) return;
+
+	if (Value.Get<bool>())
+	{
+		AbilitySystemComponent->AbilityLocalInputPressed(InputID);
+	}
+	else
+	{
+		AbilitySystemComponent->AbilityLocalInputReleased(InputID);
 	}
 }
 

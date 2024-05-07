@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "InputActionValue.h"
 #include "AbilitySystemInterface.h"
+#include "TWAttributeSet.h"
 #include "TheWandererCharacter.generated.h"
 
 
@@ -38,9 +39,17 @@ class ATheWandererCharacter : public ACharacter, public IAbilitySystemInterface
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* LookAction;
 
+	/** Fire Ability Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* FireAbilityAction;
+
 	//Ability System Component
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "GAS", meta = (AllowPrivateAccess = "true"))
-	class UAbilitySystemComponent* AbilitySystemComponent; 
+	class UAbilitySystemComponent* AbilitySystemComponent;
+
+	//Attribute Set
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "GAS", meta = (AllowPrivateAccess = "true"))
+	class UTWAttributeSet* AttributeSet;
 
 public:
 	ATheWandererCharacter();
@@ -65,7 +74,11 @@ protected:
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
 			
+	/** Called for looking input */
+	void OnFireAbility(const FInputActionValue& Value);
 
+	virtual void SendAbilityLocalInput(const FInputActionValue& Value, int32 InputID);
+	
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
