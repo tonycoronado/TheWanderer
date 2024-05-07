@@ -5,11 +5,13 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "InputActionValue.h"
+#include "AbilitySystemInterface.h"
+#include "TWAttributeSet.h"
 #include "TheWandererCharacter.generated.h"
 
 
 UCLASS(config=Game)
-class ATheWandererCharacter : public ACharacter
+class ATheWandererCharacter : public ACharacter, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 
@@ -37,10 +39,33 @@ class ATheWandererCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* LookAction;
 
+	/** Fire Ability Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* FireAbilityAction;
+
+	//Ability System Component
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "GAS", meta = (AllowPrivateAccess = "true"))
+	class UAbilitySystemComponent* AbilitySystemComponent;
+
+	//Attribute Set
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "GAS", meta = (AllowPrivateAccess = "true"))
+	class UTWAttributeSet* AttributeSet;
+
 public:
 	ATheWandererCharacter();
 	
+	virtual class UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
+	virtual void PossessedBy(AController* NewController) override;
+	virtual void OnRep_PlayerState() override;
+
+	virtual void InitializeAbilities();
+	virtual void InitializeEffects();
+
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "GAS")
+	TArray<TSubclassOf<class UTWGameplayAbility>> DefaultAbilities;
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "GAS")
+	TArray<TSubclassOf<class UGameplayEffect>> DefaultEffects;
 protected:
 
 	/** Called for movement input */
@@ -49,11 +74,17 @@ protected:
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
 			
+	/** Called for looking input */
+	void OnFireAbility(const FInputActionValue& Value);
 
+	virtual void SendAbilityLocalInput(const FInputActionValue& Value, int32 InputID);
+	
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	
+
+	virtual void BindInput();
+	bool bIsInputBound { false };
 	// To add mapping context
 	virtual void BeginPlay();
 
