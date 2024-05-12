@@ -97,6 +97,7 @@ void ATheWandererCharacter::InitializeAbilities()
 	for (TSubclassOf<UTWGameplayAbility>& Ability : DefaultAbilities)
 	{
 		AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(Ability, 1, static_cast<int32>(Ability.GetDefaultObject()->AbilityInputID), this));
+		
 	}
 }
 
@@ -152,6 +153,8 @@ void ATheWandererCharacter::SetupPlayerInputComponent(class UInputComponent* Pla
 
 		//Fire Ability
 		EnhancedInputComponent->BindAction(FireAbilityAction, ETriggerEvent::Triggered, this, &ATheWandererCharacter::OnFireAbility);
+		
+		
 
 	}
 	BindInput();
