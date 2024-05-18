@@ -19,18 +19,18 @@ UCLASS()
 class THEWANDERER_API UTWAttributeSet : public UAttributeSet
 {
 	GENERATED_BODY()
-
+public:	
 	UTWAttributeSet();
-
-	ATTRIBUTE_ACCESSORS(UTWAttributeSet, Health);
-	ATTRIBUTE_ACCESSORS(UTWAttributeSet, MaxHealth);
-
+	
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Health, Category = "Attributes", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData Health;
-	
+	ATTRIBUTE_ACCESSORS(UTWAttributeSet, Health);
+
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxHealth, Category = "Attributes", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData MaxHealth;
+	ATTRIBUTE_ACCESSORS(UTWAttributeSet, MaxHealth);
 
+protected:	
 	UFUNCTION()
 	virtual void OnRep_Health(const FGameplayAttributeData& OldHealth);
 	
