@@ -7,6 +7,7 @@
 #include "InputActionValue.h"
 #include "AbilitySystemInterface.h"
 #include "TWAttributeSet.h"
+#include "MotionWarpingComponent.h"
 #include "TheWandererCharacter.generated.h"
 
 
@@ -50,6 +51,10 @@ class ATheWandererCharacter : public ACharacter, public IAbilitySystemInterface
 	//Attribute Set
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "GAS", meta = (AllowPrivateAccess = "true"))
 	class UTWAttributeSet* AttributeSet;
+
+	//MotionWarping Component
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
+	class UMotionWarpingComponent* MotionWarpingComponent;
 
 public:
 	ATheWandererCharacter();
